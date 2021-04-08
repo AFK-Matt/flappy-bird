@@ -2,6 +2,31 @@
 import tkinter as tk
 HEIGHT = 400
 WIDTH = 200
+BIRD_SIZE = 30
+x1 = 20
+y1 = 50
+MAX_FALL_SPEED = 10
+
+
+class Bird:
+    def __init__(self, level):
+        self.level = level
+        self.box = level.canvas.create_rectangle(x1, x1 + BIRD_SIZE,
+                                                 y1, y1 - BIRD_SIZE,
+                                                 fill="gold1")
+        self.falling_speed = 0
+        self.weight()
+
+    def jump(self, foo):
+        self.falling_speed = -3
+
+    def weight(self):
+        """Supposed to be the weight force"""
+        if self.falling_speed < MAX_FALL_SPEED:
+            self.falling_speed += 0.1
+        # Update position
+        self.level.canvas.move(self.box, 0, self.falling_speed)
+        self.level.canvas.after(10, self.weight)
 
 
 class Level:
@@ -12,6 +37,8 @@ class Level:
                                 width=self.root.winfo_width(),
                                 bg="green")
         self.canvas.pack()
+        self.bird = Bird(self)
+        self.root.bind('<space>', self.bird.jump)
 
 
 class TitleScreen:
