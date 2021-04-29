@@ -2,17 +2,18 @@
 import tkinter as tk
 HEIGHT = 400
 WIDTH = 200
-BIRD_SIZE = 30
-x1 = 20
-y1 = 50
+BIRD_SIZE = 20  # Width and height of the square bird
+x1 = 30  # Pixels between the right edge of bird and left edge of canvas
+y1 = WIDTH/2  # Pixels from the top of the screen the bottom of the bird spawns
 MAX_FALL_SPEED = 10
+MS_BETWEEN_TICKS = 10  # Milliseconds between each tick
 
 
 class Bird:
     def __init__(self, level):
         self.level = level
-        self.box = level.canvas.create_rectangle(x1, x1 + BIRD_SIZE,
-                                                 y1, y1 - BIRD_SIZE,
+        self.box = level.canvas.create_rectangle(x1 - BIRD_SIZE, y1 - BIRD_SIZE,
+                                                 x1, y1,
                                                  fill="gold1")
         self.falling_speed = 0
         self.weight()
@@ -26,7 +27,7 @@ class Bird:
             self.falling_speed += 0.1
         # Update position
         self.level.canvas.move(self.box, 0, self.falling_speed)
-        self.level.canvas.after(10, self.weight)
+        self.level.canvas.after(MS_BETWEEN_TICKS, self.weight)
 
 
 class Level:
