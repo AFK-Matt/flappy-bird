@@ -16,7 +16,6 @@ class Bird:
                                                  x1, y1,
                                                  fill="gold1")
         self.falling_speed = 0
-        self.weight()
 
     def jump(self, foo):
         self.falling_speed = -3
@@ -27,7 +26,6 @@ class Bird:
             self.falling_speed += 0.1
         # Update position
         self.level.canvas.move(self.box, 0, self.falling_speed)
-        self.level.canvas.after(MS_BETWEEN_TICKS, self.weight)
 
 
 class Level:
@@ -40,6 +38,12 @@ class Level:
         self.canvas.pack()
         self.bird = Bird(self)
         self.root.bind('<space>', self.bird.jump)
+        self.tick()
+
+    def tick(self):
+        self.bird.weight()
+        self.canvas.after(MS_BETWEEN_TICKS, self.tick)
+
 
 
 class TitleScreen:
