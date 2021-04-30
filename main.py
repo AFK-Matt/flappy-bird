@@ -1,7 +1,7 @@
 """By Matthew Leith"""
 import tkinter as tk
 HEIGHT = 400
-WIDTH = 200
+WIDTH = 400
 BIRD_SIZE = 20  # Width and height of the square bird
 x1 = 30  # Pixels between the right edge of bird and left edge of canvas
 y1 = WIDTH/2  # Pixels from the top of the screen the bottom of the bird spawns
@@ -80,21 +80,25 @@ class Level:
 
 
 class TitleScreen:
-    def __init__(self, root):
-        self.root = root
-        self.title_frame = tk.Frame(self.root)
+    def __init__(self, game):
+        self.game = game
+        self.title_frame = tk.Frame(self.game.root)
         self.title_label = tk.Label(self.title_frame,
                                     text="Welcome to Flappy Bird")
         self.title_label.pack()
         self.play_button = tk.Button(self.title_frame,
-                                     text="Play", command=self.play)
+                                     text="Play",
+                                     command=self.game.start_level)
         self.play_button.pack()
-        self.title_frame.pack()
-        self.level = None
+        self.open_title_screen()
 
-    def play(self):
+    def open_title_screen(self):
+        """Pack the title screen's frame"""
+        self.title_frame.pack()
+
+    def close_title_screen(self):
+        """Unpack the title screen's frame"""
         self.title_frame.pack_forget()
-        self.level = Level(self.root)
 
 
 class Game:
@@ -103,8 +107,14 @@ class Game:
         self.root = tk.Tk()
         self.root.title("Flappy Bird - Matt Leith Edition")
         self.root.geometry("400x400")
-        self.title_screen = TitleScreen(self.root)
+        self.title_screen = TitleScreen(self)
+        self.level = None
         self.root.mainloop()
+
+    def start_level(self):
+        """Close title screen, make new level object"""
+        self.title_screen.close_title_screen()
+        self.level = Level(self.root)
 
 
 new_game = Game()
