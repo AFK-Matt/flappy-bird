@@ -31,6 +31,10 @@ class Bird:
         """Increase falling speed unless max then move it on canvas."""
         if self.falling_speed < self.game.MAX_FALL_SPEED:
             self.falling_speed += 0.1
+        # Check if updating position would put the bird though roof
+        if self.level.canvas.coords(self.box)[1] + self.falling_speed <= 0:
+            self.falling_speed = 0  # Hits head on roof
+
         # Update position
         self.level.canvas.move(self.box, 0, self.falling_speed)
 
@@ -39,6 +43,7 @@ class Pipe:
     """Handle the movements of actions of the pipe."""
 
     def __init__(self, game):
+        """Initialise attributes and make the canvas objects"""
         self.game = game
         self.canvas = game.level.canvas
         self.off_screen = False  # Set True once pipe is no longer seen
@@ -127,12 +132,14 @@ class Level:
 
     def bird_is_not_touching(self):
         """Return True if the bird is not touching a pipe/the ground."""
-        # First see if the bird is above the ground
-        if self.canvas.coords(self.bird.box)[3] >= \
-                self.canvas.winfo_reqheight() - self.game.GROUND_HEIGHT:
+        bird_coords = self.canvas.coords(self.bird.box)
+        # See if bird is colling with anything
+        if len(self.canvas.find_overlapping(bird_coords[0], bird_coords[1],
+                                            bird_coords[2], bird_coords[3]))\
+                > 1:
             return False
 
-        return True
+        return True  # No collision so return True
 
     def end_level(self):
         """Unpack the canvas, set level_over to True"""
@@ -180,6 +187,7 @@ class Level:
 
 
 class TitleScreen:
+    """Handel the activities of the title screen"""
     def __init__(self, game):
         self.game = game
         self.title_frame = tk.Frame(self.game.root)
@@ -196,7 +204,6 @@ class TitleScreen:
                                      text="Play",
                                      command=self.game.play_level)
         self.play_button.pack()
-        self.open_title_screen()
 
     def open_title_screen(self):
         """Pack the title screen's frame and updates score label"""
@@ -225,7 +232,7 @@ class Game:
     MAX_FALL_SPEED = 10  # Pixels per tick of the bird
     MS_BETWEEN_TICKS = 10  # Milliseconds between each tick
     GROUND_HEIGHT = 23  # Pixels that the ground is above bottom of canvas
-    GAP_SIZE = 50  # Pixel size of the gap between the lower and upper pipe
+    GAP_SIZE = 100  # Pixel size of the gap between the lower and upper pipe
     PIPE_DISTANCE = 200  # Pixels between pipes
     PIPE_WIDTH = 30  # Pixel width of the pipes
     PIPE_COLOUR = "gold1"
@@ -239,7 +246,10 @@ class Game:
         self.score = -1  # Not 0 to tell if we have played before
         self.high_score = 0
         self.level = Level(self)
+        # Create title screen
         self.title_screen = TitleScreen(self)
+        # Open title screen
+        self.title_screen.open_title_screen()
 
         self.root.mainloop()
 
