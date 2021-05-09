@@ -33,12 +33,12 @@ class Bird:
 
     def jump(self, event):
         """Set a negative falling speed."""
-        self._falling_speed = -3
+        self._falling_speed = - self._game.JUMP_POWER
 
     def weight(self):
         """Increase falling speed unless max then move it on canvas."""
         if self._falling_speed < self._game.MAX_FALL_SPEED:
-            self._falling_speed += 0.1
+            self._falling_speed += self._game.GRAVITY / 100
         # Check if updating position would put the bird though roof
         if self._level.canvas.coords(self.box)[1] + self._falling_speed <= 0:
             self._falling_speed = 0  # Hits head on roof
@@ -249,6 +249,8 @@ class Game:
     BIRD_SIZE = 20  # Width and height of the square bird
     # Pixel between right edge of bird and left edge of canvas
     BIRD_FRONT = 90
+    JUMP_POWER = 3  # Speed of the bird upwards after jump (px/s)
+    GRAVITY = 10  # How fast the bird accelerates downwards (px/100/s/s)
     # Pixel from top of screen the bottom of the bird spawns
     BIRD_IN_HEIGHT = int(HEIGHT / 4)  # Init height of bird
     BIRD_COLOUR = "gold1"  # Fill colour of the bird
